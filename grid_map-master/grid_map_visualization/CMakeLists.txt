@@ -30,7 +30,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS
     include
-#  LIBRARIES ${PROJECT_NAME}
+ LIBRARIES grid_map_visualization
   CATKIN_DEPENDS
     roscpp
     tf
@@ -55,14 +55,7 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/grid_map_visualization_node.cpp
-# )
-
-## Declare a cpp executable
-add_executable(
-  ${PROJECT_NAME}
-  src/grid_map_visualization_node.cpp
+add_library(grid_map_visualization
   src/GridMapVisualization.cpp
   src/GridMapVisualizationHelpers.cpp
   src/visualizations/VisualizationBase.cpp
@@ -74,15 +67,17 @@ add_executable(
   src/visualizations/GridCellsVisualization.cpp
   src/visualizations/MapRegionVisualization.cpp
 )
-
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-# add_dependencies(grid_map_visualization_node grid_map_visualization_generate_messages_cpp)
-
-## Specify libraries to link a library or executable target against
-target_link_libraries(
-  ${PROJECT_NAME}
+target_link_libraries(grid_map_visualization
   ${catkin_LIBRARIES}
+)
+
+## Declare a cpp executable
+add_executable(grid_map_visualization_node
+  src/grid_map_visualization_node.cpp
+)
+target_link_libraries(grid_map_visualization_node
+  grid_map_visualization
+  # ${catkin_LIBRARIES}
 )
 
 #############
@@ -91,7 +86,9 @@ target_link_libraries(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS
+    grid_map_visualization
+    grid_map_visualization_node 
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -101,4 +98,9 @@ install(
 install(
   DIRECTORY doc
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY include/grid_map_visualization/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  # FILES_MATCHING PATTERN "*.hpp"
 )
